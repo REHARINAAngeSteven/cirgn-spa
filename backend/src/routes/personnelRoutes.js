@@ -7,7 +7,7 @@ const router = express.Router();
 router.get ('/', PersonnelController.getAllPersonnel);
 router.post('/', PersonnelController.createPersonnel);
 router.put('/:id',authMiddleware, PersonnelController.updatePersonnel);
-router.delete('/;id',authMiddleware, PersonnelController.deletePersonnel);
+router.delete('/:id',authMiddleware, PersonnelController.deletePersonnel);
 
 
 module.exports = router;

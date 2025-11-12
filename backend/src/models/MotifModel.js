@@ -36,6 +36,44 @@ class MotifModel {
         const [rows] = await db.query(query, [id_motif]);
         return rows[0];
     }
+    /**
+     * 
+     * @param {string} type
+     * returns {Promise<Array>}
+     * 
+     */
+    static async findByType(type) {
+        if (type !== 'absent' && type !== 'indisponible') {
+            throw new Error("Le type de motif doit être 'absent' ou 'indisponible'.");
+        }
+        const query = 'SELECT id_motif,libelle,type FROM motif WHERE type = ? ORDER BY libelle;';
+        const [rows] = await db.query(query, [type]);
+        return rows;
+    }
+
+    //Mise à jour 
+    /**
+     * 
+     * @param {number} id_motif
+     * @param {Object} data - { libelle, type }
+     * 
+     */
+    static async update(id_motif, data) {
+        const query = 'UPDATE motif SET libelle = ?, type = ? WHERE id_motif = ?;';
+        const values = [data.libelle, data.type, id_motif];
+        const [result] = await db.query(query, values);
+        return result.affectedRows;
+    }
+    
+    /**
+     * Supprime un motif par son ID.
+     */
+    static async remove(id_motif) {
+        const query = 'DELETE FROM motif WHERE id_motif = ?;';
+        const [result] = await db.query(query, [id_motif]);
+        return result.affectedRows;
+    }
+
 }
 
 module.exports = MotifModel;

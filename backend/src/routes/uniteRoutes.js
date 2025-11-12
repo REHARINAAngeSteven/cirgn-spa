@@ -10,5 +10,7 @@ router.get('/', UniteController.getAllUnites);
 
 // Route sécurisée (nécessite un token JWT valide)
 router.post('/', authMiddleware, UniteController.createUnite);
+router.put('/:id', authMiddleware, UniteController.updateUnite);
+router.delete('/:id', authMiddleware, UniteController.deleteUnite);
 
 module.exports = router;
