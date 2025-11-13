@@ -69,7 +69,7 @@ class AuthController {
 
             // Création du token JWT
             const token = jwt.sign(
-                { id: user.id_user, role: user.role, matricule: user.matricule },
+                { id: user.id_user, role: user.role, matricule: user.matricule, id_unite: user.id_unite },
                 process.env.JWT_SECRET, // CORRECTION : Utilisez seulement la variable d'environnement
                 { expiresIn: '24h' } // MODIFIÉ : Token valide 24 heures
             );

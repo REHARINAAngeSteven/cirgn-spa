@@ -4,8 +4,8 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // route zalahyyy ee 
-router.get ('/', PersonnelController.getAllPersonnel);
-router.post('/', PersonnelController.createPersonnel);
+router.get ('/',authMiddleware, PersonnelController.getAllPersonnel);
+router.post('/',authMiddleware, PersonnelController.createPersonnel);
 router.put('/:id',authMiddleware, PersonnelController.updatePersonnel);
 router.delete('/:id',authMiddleware, PersonnelController.deletePersonnel);
 

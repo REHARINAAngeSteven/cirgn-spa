@@ -51,6 +51,18 @@ class SituationModel {
         return rows[0];
     }
     
+    /**
+     * Récupère la situation actuellement active.
+     * Une situation est active si 'date_cloture' est NULL.
+     * @returns {Promise<Object|null>} La situation active ou null.
+     */
+    static async findActive() {
+        const query = 'SELECT * FROM situation WHERE date_cloture IS NULL ORDER BY date_spa DESC LIMIT 1;';
+        const [rows] = await db.query(query);
+        // Retourne le premier résultat ou null si non trouvé
+        return rows.length > 0 ? rows[0] : null; 
+    }
+    
     // NOTE: La méthode update sera cruciale pour mettre à jour les totaux !
 }
 

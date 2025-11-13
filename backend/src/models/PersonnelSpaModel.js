@@ -1,6 +1,7 @@
 // src/models/PersonnelSpaModel.js
 
 const db = require('./db');
+const PersonnelModel = require('./PersonnelModel');
 // Nous aurons besoin de mettre à jour la table 'situation' après l'insertion
 const SituationModel = require('./SituationModel'); 
 
@@ -87,8 +88,68 @@ class PersonnelSpaModel {
             id_spa
         ]);
     }
+
+/**
+     * Enregistre un nouveau statut SPA pour un personnel.
+     * @param {Object} data - { id_sit, id_persgn, id_motif, commentaire }
+     * @returns {Promise<number>} ID de l'entrée créée.
+     */
+    static async createSPAEntry(data) {
+        const query = `
+            INSERT INTO personnel_spa 
+            (id_sit, id_persgn, id_motif, commentaire, date_enregistrement) 
+            VALUES (?, ?, ?, ?, NOW()); 
+        `;
+        const values = [
+            data.id_sit, 
+            data.id_persgn, 
+            data.id_motif, 
+            data.commentaire 
+        ];
+        const [result] = await db.query(query, values);
+        return result.insertId;
+    }
+
+
+
+    // Récupère les dernières entrées SPA pour chaque membre du personnel dans une unité donnée et une situation donnée
+
+    static async getLastSPAEntries(id_sit, id_unite) {
+        const query = `
+            SELECT 
+                ps.id_persgn, ps.id_motif, ps.commentaire, ps.date_enregistrement,
+                p.matricule, p.nom, p.prenom,
+                m.libelle AS motif_libelle, m.type AS motif_type,
+                u.nom_unite
+            FROM personnel_spa ps
+            JOIN personnel p ON ps.id_persgn = p.id_persgn
+            JOIN unite u ON p.id_unite = u.id_unite
+            JOIN motif m ON ps.id_motif = m.id_motif
+            
+            -- Filtre de l'unité de l'administrateur
+            WHERE p.id_unite = ? 
+            
+            -- La condition critique pour ne sélectionner que l'entrée la plus récente
+            AND ps.id_spa = (
+                SELECT MAX(id_spa)
+                FROM personnel_spa ps_max
+                WHERE ps_max.id_persgn = ps.id_persgn
+                AND ps_max.id_sit = ? 
+            )
+            
+            -- On s'assure que la situation est la bonne pour la requête principale
+            AND ps.id_sit = ? 
+            
+            ORDER BY p.matricule;
+        `;
+        
+        // Les paramètres sont : [id_unite, id_sit, id_sit]
+        const [rows] = await db.query(query, [id_unite, id_sit, id_sit]); 
+        return rows;
+    }
+
+
+
 }
 
 module.exports = PersonnelSpaModel;
-// NOTE: Vous devrez ajouter la méthode countTotalPersonnel dans PersonnelModel.js
-const PersonnelModel = require('./PersonnelModel');

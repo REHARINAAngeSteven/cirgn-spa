@@ -7,7 +7,7 @@ class UtilisateurModel {
      * Recherche un utilisateur par matricule.
      */
     static async findByMatricule(matricule) {
-        const query = 'SELECT * FROM utilisateur WHERE matricule = ?';
+        const query = 'SELECT u.*, p.id_unite FROM utilisateur u JOIN personnel p ON u.matricule = p.matricule WHERE u.matricule = ?';
         const [rows] = await db.query(query, [matricule]);
         return rows[0];
     }

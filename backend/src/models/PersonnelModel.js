@@ -69,14 +69,7 @@ class PersonnelModel {
      * @returns {Promise<Array>} Liste de tous les personnels filtrés.
      */
     static async findAll(filters = {}) {
-        let query = `
-            SELECT 
-                p.id_persgn, p.nom, p.prenom, p.matricule, p.grade, p.sexe, p.tel, p.email,
-                f.lib_fonc, u.nom_unite
-            FROM personnel p
-            LEFT JOIN fonction f ON p.id_fonc = f.id_fonc
-            LEFT JOIN unite u ON p.id_unite = u.id_unite
-        `;
+        let query = `SELECT p.*,f.lib_fonc, u.nom_unite FROM personnel p JOIN fonction f ON p.id_fonc = f.id_fonc LEFT JOIN unite u ON p.id_unite = u.id_unite`;
         
         const conditions = [];
         const values = [];
@@ -87,21 +80,16 @@ class PersonnelModel {
             values.push(filters.matricule);
         }
 
-        if (filters.grade) {
-            conditions.push('p.grade LIKE ?'); 
-            values.push(`%${filters.grade}%`);
-        }
-
         if (filters.id_unite) {
-            conditions.push('u.id_unite = ?');
+            conditions.push('p.id_unite = ?');
             values.push(filters.id_unite);
         }
         
         // recherche combinée (nom/prénom)
-        if (filters.search) {
-             conditions.push('(p.nom LIKE ? OR p.prenom LIKE ? OR p.matricule LIKE ?)');
-             values.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
-        }
+    //  if (filters.search) {
+//         conditions.push('(p.nom LIKE ? OR p.prenom LIKE ? OR p.matricule LIKE ?)');
+//         values.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+//      }
         
         // Ajout des conditions à la requête SQL
         if (conditions.length > 0) {

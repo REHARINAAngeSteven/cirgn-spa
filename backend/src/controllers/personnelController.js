@@ -8,6 +8,12 @@ class PersonnelController {
     static async getAllPersonnel(req, res) {
         // Récupération des filtres depuis l'URL (req.query)
         const filters = req.query; 
+        const role = req.user.role; // Récupération du rôle de l'utilisateur connecté
+        const adminUnitID = req.user.id_unite; // Récupération de l'unité de l'admin connecté
+        if (role === 'admin' && adminUnitID) {
+            // Si l'utilisateur est admin, on ajoute un filtre sur son unité
+            filters.id_unite = adminUnitID;
+        }
         
         try {
             // CORRECTION 1 : Appeler la méthode findAll() et lui passer les filtres

@@ -17,6 +17,7 @@ const uniteRoutes = require('./routes/uniteRoutes');
 const fonctionRoutes = require('./routes/fonctionRoutes');
 const motifRoutes = require('./routes/motifRoutes');
 const situationRoutes = require('./routes/situationRoutes');
+const personnelSpaRoutes = require('./routes/personnelSPARoutes');
 
 // Eto antsika no mampiasa ny route
 app.use('/api/auth', authRouutes);
@@ -25,6 +26,7 @@ app.use('/api/unite', uniteRoutes);
 app.use('/api/fonction', fonctionRoutes);
 app.use('/api/motif', motifRoutes);
 app.use('/api/situation', situationRoutes);
+app.use('/api/spa', personnelSpaRoutes); // Routes SPA
 
 
 // test route kely aloha
